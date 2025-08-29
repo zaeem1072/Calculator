@@ -1,23 +1,21 @@
-import React from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import { PAPER_FORMATS, PAPER_SIZES } from "../types/paperTypes";
-import { RootState, AppDispatch } from '../store/store';
+import { PAPER_FORMATS, PAPER_SIZES, CalculatorState } from "../types/paperTypes";
 
-import { setSelectedFormat, setSelectedSize } from "../store/calculatorSlice";
+interface PaperSelectorProps {
+  state: CalculatorState;
+  setSelectedFormat: (format: string) => void;
+  setSelectedSize: (size: string) => void;
+}
 
-function PaperSelector() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { selectedFormat, selectedSize } = useSelector((state: RootState) => state.calculator);
+function PaperSelector({ state, setSelectedFormat, setSelectedSize }: PaperSelectorProps) {
+  const { selectedFormat, selectedSize } = state;
+  console.log("PaperSelector render - selectedFormat:", selectedFormat, "selectedSize:", selectedSize);
   const handleFormatSelect = (formatId: string) => {
-    dispatch(setSelectedFormat(formatId));
-    const sizes = PAPER_SIZES[formatId];
-    if (sizes && sizes.length > 0) {
-      dispatch(setSelectedSize(sizes[0].id));
-    }
+    setSelectedFormat(formatId);
   };
 
+
   const handleSizeSelect = (sizeId: string) => {
-    dispatch(setSelectedSize(sizeId));
+    setSelectedSize(sizeId);
   };
 
   const typeStyles = {
@@ -25,8 +23,8 @@ function PaperSelector() {
     marginLeft: "500px",
   }
   return (
-    <div style={ typeStyles }>
-      <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+    <div style={typeStyles}>
+      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
         {Object.values(PAPER_FORMATS).map((format) => (
           <button
             key={format.id}
@@ -70,4 +68,4 @@ function PaperSelector() {
   );
 };
 
-export {PaperSelector};
+export { PaperSelector };

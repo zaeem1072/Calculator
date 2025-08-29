@@ -1,19 +1,29 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setNumberOfSheets, incrementSheets, decrementSheets } from '../store/calculatorSlice';
 import { Button } from './button';
-import { RootState, AppDispatch } from '../store/store';
 import { PaperSelector } from './types_size';
 import {NumberRangeSelector} from "./slider"
+import { CalculatorState } from '../types/paperTypes';
 
-const PaperCalculator: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { numberOfSheets, totalWeight } = useSelector((state: RootState) => state.calculator);
+interface PaperCalculatorProps {
+  state: CalculatorState;
+  setNumberOfSheets: (sheets: number) => void;
+  incrementSheets: () => void;
+  decrementSheets: () => void;
+  setSelectedFormat: (format:string) => void;
+  setSelectedSize: (size:string) => void;
+  setPaperLength: (length: number) => void;
+  setPaperWidth: (width: number) => void;
+  setPaperGrammage: (grammage: number) => void;
+}
+const PaperCalculator: React.FC<PaperCalculatorProps> = ({ state, setNumberOfSheets, incrementSheets, decrementSheets, setSelectedFormat, setSelectedSize, setPaperLength, setPaperWidth, setPaperGrammage }) => {
+
+  const { numberOfSheets, totalWeight } = state;
   const [inputValue, setInputValue] = useState<string | number>(numberOfSheets);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSave = () => {
-    dispatch(setNumberOfSheets(Number(inputValue)));
+    setNumberOfSheets(Number(inputValue));
     setIsEditing(false);
   };
 
@@ -96,13 +106,22 @@ const PaperCalculator: React.FC = () => {
         <p style={weightStyle}>Total Weight: {totalWeight.toFixed(2)} g</p>
 
         <div style={{ display: 'flex', gap: '10px', marginTop: '20px', justifyContent: 'center' }}>
-          <Button name="-" onClick={() => dispatch(decrementSheets())} />
-          <Button name="+" onClick={() => dispatch(incrementSheets())} />
+          <Button name="-" onClick={() => decrementSheets()} />
+          <Button name="+" onClick={() => incrementSheets()} />
         </div>
       </div>
     </div>
-    <PaperSelector />
-    <NumberRangeSelector />
+    <PaperSelector
+      state={state}
+      setSelectedFormat={setSelectedFormat}
+      setSelectedSize={setSelectedSize}
+    />
+    <NumberRangeSelector
+      state={state}
+      setPaperLength={setPaperLength}
+      setPaperWidth={setPaperWidth}
+      setPaperGrammage={setPaperGrammage}
+      />
     </>
   );
 };

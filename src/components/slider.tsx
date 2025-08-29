@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPaperGrammage, setPaperLength, setPaperWidth } from '../store/calculatorSlice';
-import { RootState } from '../store/store';
+import { CalculatorState } from '../types/paperTypes';
 
-function NumberRangeSelector() {
-  const { customLength, customWidth, customGrammage } = useSelector((state: RootState) => state.calculator);
+interface NumberRangeSelectorProps {
+  state: CalculatorState
+  setPaperLength: (length: number) => void;
+  setPaperWidth: (width: number) => void;
+  setPaperGrammage: (grammage: number) => void;
+}
+
+function NumberRangeSelector({ state , setPaperLength, setPaperWidth, setPaperGrammage }: NumberRangeSelectorProps) {
+  const {customLength, customWidth, customGrammage} = state;
   const [length, setLength] = useState<[number, number]>([0, customLength]);
   const [width, setWidth] = useState<[number, number]>([0, customWidth]);
   const [grammage, setGrammage] = useState<[number, number]>([0, customGrammage]);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setLength([0, customLength]);
@@ -22,17 +25,17 @@ function NumberRangeSelector() {
   const handleLengthChange = (newLength: [number, number]) => {
     // console.log(newLength);
     setLength(newLength);
-    dispatch(setPaperLength(newLength[1]));
+    setPaperLength(newLength[1]);
   };
 
   const handleWidthChange = (newWidth: [number, number]) => {
     setWidth(newWidth);
-    dispatch(setPaperWidth(newWidth[1]));
+    setPaperWidth(newWidth[1]);
   };
 
   const handleGrammageChange = (newGrammage: [number, number]) => {
     setGrammage(newGrammage);
-    dispatch(setPaperGrammage(newGrammage[1]));
+    setPaperGrammage(newGrammage[1]);
   };
 
 
